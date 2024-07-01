@@ -1,0 +1,18 @@
+{% extends "tutors/base.html" %}
+
+{% block content %}
+<h1>Payment</h1>
+<p>Your Balance: {{ user_balance }}</p>
+<p>Total Cost: {{ total_cost }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    
+    {% if user_balance < total_cost %}
+        <span style="color: red;">Balance is not enough to pay, please refill your balance or make changes in your cart.</span>
+    {% else %}
+        <button type="submit">Confirm Payment</button>
+    {% endif %}
+</form>
+<a href="{% url 'cart_detail' %}">Cancel</a>
+{% endblock %}

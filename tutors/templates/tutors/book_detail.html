@@ -1,0 +1,49 @@
+{% extends "tutors/base.html" %}
+
+{% block content %}
+{% if book.id in cart_items %}
+        <a href="{% url 'cart_detail' %}">Перейти в корзину и оплатить</a>
+        {% else %}
+            <a href="{% url 'add_to_cart' book.id %}">Добавить в корзину</a>
+        {% endif %}
+<h1>{{ book.title }}</h1>
+<p>Author: {{ book.author.name }}</p>
+<p>Publication Date: {{ book.publication_date }}</p>
+<p>Publisher: {{ book.publisher.name }}</p>
+<p>Price: {{ book.price }} tg </p>
+<p>Genre: {{ book.genre.name }}</p>
+<p>Subgenre: {{ book.subgenre.name }}</p>
+<p>Language: {{ book.language.name }}</p>
+<p>Description: {{ book.description }}</p>
+<img src="{{ book.cover_image_url }}" alt="{{ book.title }} cover">
+<p>Average Rating: {{ book.average_rating }}</p>
+
+<h2>Reviews</h2>
+<ul>
+    {% for review in reviews %}
+    <li>
+        <p>{{ review.review_text }}</p>
+        <p>Rating: {{ review.rating }}</p>
+        <p>By: {{ review.user.username }}</p>
+        {% if review.user == user %}
+            <a href="{% url 'edit_review' book.id review.id %}">Edit</a>
+            <a href="{% url 'delete_review' book.id review.id %}">Delete</a>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li>No reviews yet.</li>
+    {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+    <h2>Add a Review</h2>
+    <form method="post" action="{% url 'add_review' book.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Review</button>
+    </form>
+{% else %}
+<p><a href="{% url 'login' %}?next={% url 'book_detail' book.id %}">Log in</a> to add a review.</p>
+{% endif %}
+
+{% endblock %}

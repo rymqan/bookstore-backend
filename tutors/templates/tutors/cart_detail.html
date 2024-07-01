@@ -1,0 +1,55 @@
+{% extends "tutors/base.html" %}
+
+{% block title %}Cart Detail - Bookstore{% endblock %}
+
+{% block content %}
+<h1>Your Cart</h1>
+
+
+
+{% if cart_items %}
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total Price</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+    <tr>
+      <td>{{ item.book.title }}</td>
+      <td>{{ item.book.price }} tg</td>
+      <td>
+        <form method="post" action="{% url 'update_cart_item' item.id %}">
+          {% csrf_token %}
+          <input type="number" name="quantity" id="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" onkeydown="if(event.keyCode==13){event.preventDefault(); document.getElementById('update_btn_{{ item.id }}').click();}">
+          <button id="update_btn_{{ item.id }}" type="submit" style="display: none;">Update</button>
+        </form>
+      </td>
+      <td>{{ item.total_price }} tg</td>
+      <td><a href="{% url 'remove_from_cart' item.id %}">Remove</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3"><strong>Total:</strong></td>
+      <td>{{ total_price }} tg</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+<a href="{% url 'payment' %}">Proceed to Payment</a>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+
+<script>
+  // Optional: You can add JavaScript for further customization
+</script>
+
+{% endblock %}

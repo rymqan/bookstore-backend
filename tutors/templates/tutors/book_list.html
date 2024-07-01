@@ -1,0 +1,47 @@
+{% extends "tutors/base.html" %}
+
+{% block content %}
+<h1>Book List</h1>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Search by title or author" value="{{ query }}">
+    <select name="genre">
+        <option value="">All Genres</option>
+        {% for genre in genres %}
+        <option value="{{ genre.id }}" {% if genre.id|stringformat:"s" == selected_genre %}selected{% endif %}>{{ genre.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="author">
+        <option value="">All Authors</option>
+        {% for author in authors %}
+        <option value="{{ author.id }}" {% if author.id|stringformat:"s" == selected_author %}selected{% endif %}>{{ author.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="language">
+        <option value="">All Languages</option>
+        {% for language in languages %}
+        <option value="{{ language.id }}" {% if language.id|stringformat:"s" == selected_language %}selected{% endif %}>{{ language.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<ul>
+    {% for book in books %}
+    <li>
+        <h2><a href="{% url 'book_detail' book.id %}">{{ book.title }}</a></h2>
+        <p>Author: {{ book.author.name }}</p>
+        <p>Price: {{ book.price }} tg</p>
+        <p>Average Rating: {{ book.average_rating }}</p>
+        
+        {% if book.id in cart_items %}
+        <a href="{% url 'cart_detail' %}">Перейти в корзину и оплатить</a>
+        {% else %}
+            <a href="{% url 'add_to_cart' book.id %}">Добавить в корзину</a>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li>No books found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

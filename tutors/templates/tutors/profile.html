@@ -1,0 +1,27 @@
+{% extends "tutors/base.html" %}
+
+{% block content %}
+    <h1>User Profile</h1>
+    <p>Username: {{ user.username }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Balance: {{ request.user.profile.balance }} tg</p>
+    <h2>Purchased Books</h2>
+    <ul>
+        {% for book in purchased_books %}
+        <li>
+            {{ book.title }} by {{ book.author.name }}
+            {% if book.ebook %}
+            - <a href="{{ book.ebook.url }}">Download eBook</a>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>No books purchased.</li>
+        {% endfor %}
+    </ul>
+    <!-- Add profile details here
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form> -->
+
+{% endblock %}
